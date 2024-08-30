@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import Main from './pages/Main';
 import {BrowserRouter,Routes,Route} from "react-router-dom"
 import { SearchTrack ,searchTracksByArtist } from './api/api';
+import Detail from './pages/Detail';
+import { RecentlyPlayedProvider } from './components/RecentlyPlayedContext';
 
  
 const App: React.FC = () => {
@@ -22,11 +24,14 @@ const App: React.FC = () => {
   };
   return (
     <div>
+      <RecentlyPlayedProvider>
       <BrowserRouter>
         <Routes>
         <Route path="/"  element={<Main  onSearch ={handleSearch} loading ={loading}  searchResults ={tracks}/>} />
+        <Route path="/detail/:id"  element = {<Detail/>}  />
         </Routes>
       </BrowserRouter>
+      </RecentlyPlayedProvider>
     </div>
   );
 };

@@ -13,7 +13,7 @@ const TrackListContainer = styled.ul`
     left:-10%;
   }
     position:relative;
-    left:20%;
+    left:30%;
 `;
 
 interface TrackListProps {

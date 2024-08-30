@@ -1,13 +1,11 @@
 // src/components/TrackItem.tsx
 import React from 'react';
 import styled from 'styled-components';
+import { useRecentlyPlayed } from './RecentlyPlayedContext';
+import { useNavigate } from 'react-router-dom';
 
 interface TrackItemProps {
-  track?: any;
-  id? :string;
-  key? : number;
-  name? :string;
-  preview_url? :string;
+  track: any;
 }
 
 // Styled Components
@@ -15,16 +13,17 @@ const TrackItemContainer = styled.li`
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  cursor: pointer; /* 클릭할 수 있는 표시 */
+  cursor: pointer;
   justify-content: center;
-  border-top:1px solid grey;
-  border-bottom:1px solid grey;
-  margin-right:20px;
-  width:300px;
+  border-top: 1px solid grey;
+  border-bottom: 1px solid grey;
+  margin-right: 20px;
+  width: 300px;
 `;
+
 const ItemContainer = styled.div`
-    display:inline-block;
-`
+  display: inline-block;
+`;
 
 const TrackImage = styled.img`
   width: 100px;
@@ -37,8 +36,7 @@ const TrackInfo = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width:300px;
-  
+  width: 300px;
 `;
 
 const TrackName = styled.h3`
@@ -58,24 +56,34 @@ const AudioPlayer = styled.audio`
 `;
 
 const TrackItem: React.FC<TrackItemProps> = ({ track }) => {
-  const imageUrl = track.album.images[0]?.url; // 앨범 이미지 URL 가져오기
-  const previewUrl = track.preview_url; // 트랙의 미리 듣기 URL
-
+ 
+  const imageUrl = track.album.images[0]?.url;
+  const previewUrl = track.preview_url;
+  const { addTrackToRecentlyPlayed } = useRecentlyPlayed();
+  const navigate = useNavigate();
+  const handlePlay = () => {
+    if (track) {
+      addTrackToRecentlyPlayed(track);
+    }
+  };
+  const DetailNav = () =>{
+    navigate(`/detail/${track.id}`);
+  }
   return (
     <ItemContainer>
-    <TrackItemContainer >
-      {imageUrl && <TrackImage src={imageUrl} alt={track.name} />}
-      <TrackInfo>
-        <TrackName>{track.name}</TrackName>
-        <TrackArtists>{track.artists.map((artist: any) => artist.name).join(', ')}</TrackArtists>
-        {previewUrl && (
-          <AudioPlayer controls>
-            <source src={previewUrl} type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </AudioPlayer>
-        )}
-      </TrackInfo>
-    </TrackItemContainer>
+      <TrackItemContainer onClick={DetailNav}>
+        {imageUrl && <TrackImage src={imageUrl} alt={track.name} />}
+        <TrackInfo>
+          <TrackName>{track.name}</TrackName>
+          <TrackArtists>{track.artists.map((artist: any) => artist.name).join(', ')}</TrackArtists>
+          {previewUrl && (
+            <AudioPlayer controls onPlay={handlePlay}>
+              <source src={previewUrl} type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </AudioPlayer>
+          )}
+        </TrackInfo>
+      </TrackItemContainer>
     </ItemContainer>
   );
 };

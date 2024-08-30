@@ -3,7 +3,7 @@ import axios from 'axios';
 // API 기본 URL 및 액세스 토큰은 환경 변수로 관리하는 것이 좋습니다.
 // process.env.REACT_APP_SPOTIFY_BASE_URL와 process.env.REACT_APP_ACCESS_TOKEN을 사용하는 것을 권장합니다.
 const SPOTIFY_BASE_URL = "https://api.spotify.com/v1";
-const ACCESS_TOKEN = "BQAtmtfz_j3FhQoimpvfMmB-mOS7BhsnhuSpuBj-OCsUFcxnsrLy3Jj7biol2uGt1lFUgfG1jHB-KWTI1hqv1kOrZ815bxk8p37hoTwaLf2vxQ1yiNSNlMF4rTZTR8k3PbXQ-MN9ZAEYrbQvkKF1_LRVvKwgbzNEicbXredQXp44r72DBbkQ4NMYPS-idsg-ZVvJcV62AzKHMLsAl3R8VlIRJLa6_vL-0Pa1";
+export const ACCESS_TOKEN = "BQAI8XJKlhF5K3Mf-06xjICrMj0YyWdPjcXu-YBnYhkQdZSBYgd8pK-NBQC2uAGJqj2dO6qZOloRegkWyGqXmvj_qlGVb-qSnIlBWYlCTS9If3Aic8sK5BIvgoLUr_4Myrc9qBwwX9D8PqQ-2lcD3UxaJggkVDCnKv0QC920p5kD7tUaLZ5GljUrezjnfgDUpjwHP0A59F3UTsqf3K-CfYVVVEe9klHQOgkv";
 
 interface Track {
     track: {
@@ -72,7 +72,7 @@ export const searchTracksByArtist = async (artistName: string): Promise<SearchTr
         params: {
           q: `artist:${artistName}`,
           type: 'track',
-          limit: 20
+          limit: 21
         },
         headers: {
           Authorization: `Bearer ${ACCESS_TOKEN}`

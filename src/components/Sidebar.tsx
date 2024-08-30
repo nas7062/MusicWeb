@@ -1,7 +1,8 @@
 // src/components/Sidebar.tsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useRecentlyPlayed } from './RecentlyPlayedContext';
 
 const SidebarContainer = styled.div`
   width: 200px;
@@ -14,26 +15,6 @@ const SidebarContainer = styled.div`
   align-items: flex-start;
   position: fixed;
   left: 0;
-
-  
-`;
-
-const SidebarItem = styled(Link)`
-  color: black;
-  text-decoration: none;
-  font-size: 18px;
-  position: relative;
-  top: 50px;
-  margin-top: 10px;
-  padding: 10px;
-  width: 100%;
-  text-align: left;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: #2112;
-  }
 `;
 
 const InputWrapper = styled.div`
@@ -78,18 +59,64 @@ const Button = styled.button`
   }
 `;
 
-interface SidebarProps {
-  onSearch: (query: string) => void;
-  loading: boolean;
-}
+const SidebarLink = styled(Link)`
+  color: black;
+  text-decoration: none;
+  font-size: 18px;
+  position: relative;
+  top: 50px;
+  margin-top: 10px;
+  padding: 10px;
+  display: block;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  cursor:pointer;
+  &:hover {
+    background-color: #2112;
+  }
+`;
 
-const Sidebar: React.FC<SidebarProps> = ({ onSearch, loading }) => {
+const RecentlyPlayedDropdown = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin-top: 50px;
+  margin-left: 10px;
+`;
+
+const RecentlyPlayedItem = styled.li`
+  padding: 5px;
+  font-size: 16px;
+  color: #333;
+  display:flex;
+  cursor:pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+  img {
+    width:50px;
+    height:50px;
+    position:relative;;
+    left:-20px;
+  }
+
+`;
+
+const Sidebar: React.FC<{ onSearch: (query: string) => void; loading: boolean }> = ({ onSearch, loading }) => {
+  const { recentlyPlayed } = useRecentlyPlayed();
   const [query, setQuery] = useState('');
-
+  const [isRecentOpen, setIsRecentOpen] = useState(false);
+  const navigate =useNavigate();
   const handleSearchClick = () => {
     onSearch(query);
   };
 
+  const toggleRecentOpen = () => {
+    setIsRecentOpen(!isRecentOpen);
+  };
+  const handleTrackClick = (trackId: string) => {
+    navigate(`/detail/${trackId}`); // Navigate to the track detail page
+  };
+  console.log(recentlyPlayed);
   return (
     <SidebarContainer>
       <h1><Link to={"/"}>10012</Link></h1>
@@ -104,9 +131,22 @@ const Sidebar: React.FC<SidebarProps> = ({ onSearch, loading }) => {
           {loading ? 'Searching...' : 'Search'}
         </Button>
       </InputWrapper>
-      <SidebarItem to="/">Home</SidebarItem>
-      <SidebarItem to="/recent">최근 재생 목록</SidebarItem>
-      
+      <SidebarLink to="/">Home</SidebarLink>
+      <SidebarLink as="div" onClick={toggleRecentOpen} to={undefined as any}>최근 재생 목록</SidebarLink>
+      {isRecentOpen && (
+        <RecentlyPlayedDropdown>
+          {recentlyPlayed.length > 0 ? (
+            recentlyPlayed.map((track) => (
+              <RecentlyPlayedItem key={track.id} onClick={()=>handleTrackClick(track.id)}>
+                <img src={track.album.images[0]?.url} alt="" />
+                {track.name} - {track.artists.map((artist: any) => artist.name).join(', ')}
+              </RecentlyPlayedItem>
+            ))
+          ) : (
+            <RecentlyPlayedItem>최근 재생된 트랙이 없습니다.</RecentlyPlayedItem>
+          )}
+        </RecentlyPlayedDropdown>
+      )}
     </SidebarContainer>
   );
 };

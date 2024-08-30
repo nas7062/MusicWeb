@@ -5,8 +5,8 @@ import TrackList from '../components/TrackList';
 import styled from 'styled-components';
 import Search from '../components/Search';
 import Sidebar from '../components/Sidebar';
+import { RecentlyPlayedProvider } from '../components/RecentlyPlayedContext';
 
-// Styled Components
 const AppContainer = styled.div`
   padding: 20px;
   width: 1500px;
@@ -16,15 +16,16 @@ const AppContainer = styled.div`
     margin: 10px 10px;
   }
 `;
+
 interface MainProps {
-    onSearch: (query: string) => void;
-    loading: boolean;
-    searchResults: any[]; // 검색 결과를 저장하는 배열
-  }
-  
-const Main: React.FC<MainProps> = ({onSearch,loading,searchResults}) => {
+  onSearch: (query: string) => void;
+  loading: boolean;
+  searchResults: any[];
+}
+
+const Main: React.FC<MainProps> = ({ onSearch, loading, searchResults }) => {
   const [tracks, setTracks] = useState<any[]>([]);
- 
+
   useEffect(() => {
     const getPlaylist = async () => {
       const playlistId = "37i9dQZF1DXcBWIGoYBM5M"; // Spotify의 Top 50 Global Playlist ID
@@ -33,17 +34,18 @@ const Main: React.FC<MainProps> = ({onSearch,loading,searchResults}) => {
         setTracks(playlistData.tracks.items);
       }
     };
-    
+
     getPlaylist();
   }, []);
 
   return (
-    <AppContainer>
-      <Sidebar onSearch={onSearch} loading={loading}/>
-      <Search tracks={searchResults}/>
-      <TrackList tracks={tracks} />
-    
-    </AppContainer> 
+    <RecentlyPlayedProvider>
+      <AppContainer>
+        <Sidebar onSearch={onSearch} loading={loading} />
+        <Search tracks={searchResults} />
+        <TrackList tracks={tracks} />
+      </AppContainer>
+    </RecentlyPlayedProvider>
   );
 };
 

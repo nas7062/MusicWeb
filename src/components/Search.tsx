@@ -27,6 +27,9 @@ const ArtistImg = styled.img`
     width:300px;
     height:300px;
     display:inline;
+    position:relative;
+    left:35%;
+    border-radius:50%;
 `
 
 

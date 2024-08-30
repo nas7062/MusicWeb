@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useRecentlyPlayed } from './RecentlyPlayedContext';
+import { useNavigate } from 'react-router-dom';
 
 interface SearchItemProps {
   track: {
@@ -19,7 +21,10 @@ const SearchItemContainer = styled.li`
   align-items: center;
   margin-bottom: 20px;
   cursor: pointer; /* 클릭할 수 있는 표시 */
-  width:400px;
+  width:350px;
+  border-top:1px solid grey;
+  margin-right:20px;
+  border-bottom:1px solid grey;
 `;
 const ItemContainer = styled.div`
     display:inline-block;
@@ -57,24 +62,31 @@ const AudioPlayer = styled.audio`
 `;
 
 const SearchItem: React.FC<SearchItemProps> = ({ track }) => {
-    const imageUrl = track.album.images[0]?.url;
+  const imageUrl = track.album.images[0]?.url;
   const previewUrl = track.preview_url || '';
-  
+  const { addTrackToRecentlyPlayed } = useRecentlyPlayed();
+  const navigate = useNavigate();
+  const handlePlay = () => {
+    addTrackToRecentlyPlayed(track);
+  };
+  const DetailNav = () =>{
+    navigate(`/detail/${track.id}`);
+  }
   return (
     <ItemContainer>
-    <SearchItemContainer>
-      {imageUrl && <TrackImage src={imageUrl} alt={track.name} />}
-      <TrackInfo>
-        <TrackName>{track.name}</TrackName>
-        <TrackArtists>{track.artists.map(artist => artist.name).join(', ')}</TrackArtists>
-        {previewUrl && (
-          <AudioPlayer controls>
-            <source src={previewUrl} type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </AudioPlayer>
-        )}
-      </TrackInfo>
-    </SearchItemContainer>
+      <SearchItemContainer onClick={DetailNav}>
+        {imageUrl && <TrackImage src={imageUrl} alt={track.name} />}
+        <TrackInfo>
+          <TrackName>{track.name}</TrackName>
+          <TrackArtists>{track.artists.map(artist => artist.name).join(', ')}</TrackArtists>
+          {previewUrl && (
+            <AudioPlayer controls onPlay={handlePlay}>
+              <source src={previewUrl} type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </AudioPlayer>
+          )}
+        </TrackInfo>
+      </SearchItemContainer>
     </ItemContainer>
   );
 };
