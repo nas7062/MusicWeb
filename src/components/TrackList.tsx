@@ -2,6 +2,7 @@
 import React from 'react';
 import TrackItem from './TrackItem';
 import styled from 'styled-components';
+import { Track } from '../types/type';
 
 const TrackListContainer = styled.ul`
   list-style-type: none;
@@ -17,19 +18,20 @@ const TrackListContainer = styled.ul`
 `;
 
 interface TrackListProps {
-  tracks: any[];
+  tracks: Track[];
 }
 
 const TrackList: React.FC<TrackListProps> = ({ tracks }) => {
 
-    const showtracks = tracks.slice(0,16);
+    const showtracks = tracks.slice(0,16); 
+    
   return (
     <TrackListContainer>
     <h2>지금 인기있는 곡</h2>
-      {showtracks.map((item, index) => (
+      {showtracks.map((track) => (
         <TrackItem
-          key={index}
-          track={item.track}
+          key={track.id}
+          track={track}
         />
       ))}
     

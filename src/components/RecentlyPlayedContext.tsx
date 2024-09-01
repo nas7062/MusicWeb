@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 
-interface Track {
+interface RecentlyTrack {
   id: string;
   name: string;
   album: {
@@ -11,14 +11,14 @@ interface Track {
 }
 
 interface RecentlyPlayedContextType {
-  recentlyPlayed: Track[];
-  addTrackToRecentlyPlayed: (track: Track) => void;
+  recentlyPlayed: RecentlyTrack[];
+  addTrackToRecentlyPlayed: (track: RecentlyTrack) => void;
 }
 
 const RecentlyPlayedContext = createContext<RecentlyPlayedContextType | undefined>(undefined);
 
 export const RecentlyPlayedProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [recentlyPlayed, setRecentlyPlayed] = useState<Track[]>([]);
+  const [recentlyPlayed, setRecentlyPlayed] = useState<RecentlyTrack[]>([]);
 
   useEffect(() => {
     const storedTracks = localStorage.getItem('recentlyPlayed');
@@ -33,7 +33,7 @@ export const RecentlyPlayedProvider: React.FC<{ children: ReactNode }> = ({ chil
     }
   }, [recentlyPlayed]);
 
-  const addTrackToRecentlyPlayed = (track: Track) => {
+  const addTrackToRecentlyPlayed = (track: RecentlyTrack) => {
     setRecentlyPlayed(prevTracks => {
       // Remove any existing track with the same ID
       const updatedTracks = prevTracks.filter(t => t.id !== track.id);

@@ -3,9 +3,10 @@ import React from 'react';
 import styled from 'styled-components';
 import { useRecentlyPlayed } from './RecentlyPlayedContext';
 import { useNavigate } from 'react-router-dom';
+import { Track } from '../types/type';
 
 interface TrackItemProps {
-  track: any;
+  track: Track;
 }
 
 // Styled Components
@@ -57,13 +58,13 @@ const AudioPlayer = styled.audio`
 
 const TrackItem: React.FC<TrackItemProps> = ({ track }) => {
  
-  const imageUrl = track.album.images[0]?.url;
-  const previewUrl = track.preview_url;
-  const { addTrackToRecentlyPlayed } = useRecentlyPlayed();
+  const imageUrl = track.album.images[0]?.url; // 트랙의 이미지 받아옴
+  const previewUrl = track.preview_url; //미리듣기 받아옴
+  const { addTrackToRecentlyPlayed } = useRecentlyPlayed(); //최근 재생목록 추가하는 함수
   const navigate = useNavigate();
   const handlePlay = () => {
     if (track) {
-      addTrackToRecentlyPlayed(track);
+      addTrackToRecentlyPlayed(track);  // 트랙이 재생될 때 최근 재생목록에 추가하는 함수
     }
   };
   const DetailNav = () =>{

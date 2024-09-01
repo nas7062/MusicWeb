@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import SearchItem from './SearchItem';
 import styled from 'styled-components';
-import { fetchArtistImage, SearchTrack } from '../api/api';
+import { fetchArtistImage } from '../api/api';
+import { SearchTrack } from '../types/type';
 
+interface SearchProps {
+  tracks: SearchTrack[];
+}
 const Container = styled.div`
   width: 1200px;
   margin: 0 auto;
@@ -33,9 +37,7 @@ const ArtistImg = styled.img`
 `
 
 
-interface SearchProps {
-    tracks: SearchTrack[];
-  }
+
 const Search: React.FC<SearchProps> = ({tracks}) => {
     const [artistImage, setArtistImage] = useState<string | null>(null);
     const firstTrack = tracks[0];
@@ -45,7 +47,8 @@ const Search: React.FC<SearchProps> = ({tracks}) => {
       if (artistName) {
         fetchArtistImage(artistName).then((image) => setArtistImage(image));
       }
-    }, [artistName]);
+    }, [artistName]); // 아티스트 이름이 변경될 때마다 아티스트 이미지를 가져옴
+
   return (
     <>
     <Container>

@@ -102,12 +102,12 @@ const RecentlyPlayedItem = styled.li`
 `;
 
 const Sidebar: React.FC<{ onSearch: (query: string) => void; loading: boolean }> = ({ onSearch, loading }) => {
-  const { recentlyPlayed } = useRecentlyPlayed();
-  const [query, setQuery] = useState('');
-  const [isRecentOpen, setIsRecentOpen] = useState(false);
+  const { recentlyPlayed } = useRecentlyPlayed(); //최근재생목록
+  const [query, setQuery] = useState(''); //검색어
+  const [isRecentOpen, setIsRecentOpen] = useState(false); // 최근재생목록 토글
   const navigate =useNavigate();
   const handleSearchClick = () => {
-    onSearch(query);
+    onSearch(query);  // 검색 버튼 클릭 시 검색 함수 호출
   };
 
   const toggleRecentOpen = () => {
@@ -116,7 +116,7 @@ const Sidebar: React.FC<{ onSearch: (query: string) => void; loading: boolean }>
   const handleTrackClick = (trackId: string) => {
     navigate(`/detail/${trackId}`); // Navigate to the track detail page
   };
-  console.log(recentlyPlayed);
+  
   return (
     <SidebarContainer>
       <h1><Link to={"/"}>10012</Link></h1>

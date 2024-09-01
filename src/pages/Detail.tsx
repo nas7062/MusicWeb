@@ -4,6 +4,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import { ACCESS_TOKEN } from '../api/api';
 import { useRecentlyPlayed } from '../components/RecentlyPlayedContext';
+import { Track } from '../types/type';
 
 // Styled Components
 const Container = styled.div`
@@ -12,7 +13,6 @@ const Container = styled.div`
   width: 1400px;
   position:relative;
   left:30%;
- 
 `;
 
 const TrackDetailSection = styled.div`
@@ -60,14 +60,16 @@ const AudioPlayer = styled.audio`
 
 const Loading = styled.div`
   font-size: 1.5em;
-  color: #1db954; /* Spotify Green */
+  color: #1db954; 
   text-align: center;
   margin-top: 50px;
+  position:absolute;
+  left:45%;
 `;
 
 const Error = styled.div`
   font-size: 1.5em;
-  color: #e74c3c; /* Error Color */
+  color: #e74c3c; 
   text-align: center;
   margin-top: 50px;
 `;
@@ -101,25 +103,23 @@ const RecentlyPlayedItem = styled.li`
 `;
 
 const TrackDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const [track, setTrack] = useState<any>(null);
+  const { id } = useParams<{ id: string }>(); // track Id 가져옴
+  const [track, setTrack] = useState<Track | null>(null);
   const [loading, setLoading] = useState(true);
-  const { recentlyPlayed, addTrackToRecentlyPlayed } = useRecentlyPlayed();
+  const { recentlyPlayed } = useRecentlyPlayed(); // 최근 재생목록 가져옴
   const navigate = useNavigate();
   const handleTrackClick = (trackId: string) => {
-    navigate(`/detail/${trackId}`); // Navigate to the track detail page
+    navigate(`/detail/${trackId}`); // 상세페이지 이동
   };
   useEffect(() => {
     const fetchTrack = async () => {
-      try {
+      try {  // Spotify API를 통해 트랙 정보 가져옴
         const response = await axios.get(`https://api.spotify.com/v1/tracks/${id}`, {
           headers: {
             Authorization: `Bearer ${ACCESS_TOKEN}`,
           },
         });
-        setTrack(response.data);
-        // Add track to recently played
-        addTrackToRecentlyPlayed(response.data);
+        setTrack(response.data); // 트랙정보 저장
       } catch (error) {
         console.error("Error fetching track:", error);
       } finally {
@@ -128,7 +128,7 @@ const TrackDetail: React.FC = () => {
     };
 
     fetchTrack();
-  }, [id]);
+  }, [id]); // id값 변경시 실행
 
   if (loading) return <Loading>Loading...</Loading>;
   if (!track) return <Error>Track not found</Error>;
@@ -140,10 +140,14 @@ const TrackDetail: React.FC = () => {
         <Title>{track.name}</Title>
         <Image src={track.album.images[0]?.url} alt={track.name} />
         <Artists>{track.artists.map((artist: any) => artist.name).join(', ')}</Artists>
-        <AudioPlayer  key={track.preview_url} controls>
-          <source src={track.preview_url} type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </AudioPlayer>
+        {track.preview_url ? (
+          <AudioPlayer key={track.preview_url} controls>
+            <source src={track.preview_url as string} type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </AudioPlayer>
+        ) : (
+          <p>No preview available</p>
+        )}
       </TrackDetailSection>
       <RecentlyPlayedSection>
         <RecentlyPlayedTitle>최근 재생 목록</RecentlyPlayedTitle>

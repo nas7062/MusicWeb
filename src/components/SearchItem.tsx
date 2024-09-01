@@ -64,7 +64,7 @@ const AudioPlayer = styled.audio`
 const SearchItem: React.FC<SearchItemProps> = ({ track }) => {
   const imageUrl = track.album.images[0]?.url;
   const previewUrl = track.preview_url || '';
-  const { addTrackToRecentlyPlayed } = useRecentlyPlayed();
+  const { addTrackToRecentlyPlayed } = useRecentlyPlayed(); //최근 재생목록 추가
   const navigate = useNavigate();
   const handlePlay = () => {
     addTrackToRecentlyPlayed(track);
