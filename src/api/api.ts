@@ -1,37 +1,38 @@
 import axios from 'axios';
-import { SearchTrack, Track } from '../types/type';
-
-const SPOTIFY_BASE_URL = "https://api.spotify.com/v1";
-export const ACCESS_TOKEN = "BQD_iv2iheHxUc9X74G5rcO_fJMmydE_mCzAidQ9uqewI6y2OUah1yfCcLnrCdf6fK0Ux4EtXF4lk9klCQp9qJ7qLwVRJ4_ZsEieEqIdRd7VHvckEiyrgO3wBZFuAZYNz_mgf2bY-ehjOd89It176ZF7HysyHBnVBWqhaZH1t4b6N-n2oxbsN_5I5p8qdlNS8F1kgi_e14bSpkjeOYfB0HoIHfcjfLTBYQCJ";
+import { SearchTrack, SpotifyPlaylistTrack, Track  ,SpotifyArtist,SpotifyImage,SpotifyTrack} from '../types/type';
 
 
+const SPOTIFY_BASE_URL = "https://api.spotify.com/v1"; // Spotify API의 기본 URL 설정
+export const ACCESS_TOKEN = "BQBBqEHWsZ_3TQjiRDNK0f1TDCwv9awrXVoLrMBcOycoIaznFBT8sepYjiXqpB18oYRGUCp9AS7gTU0wk6UPJmeXnYL1wdQS5YUe-Y2fTkw3w8SASrwkksdYy7UD9Jo7btz1wbJf4ZVn_zcaD4ABXP5h0WShAKrkNEN9ZVIEJlzT9JbIImBItXpMVJ1151TKjVnPVTkewHRM-n80x9wf6WHshn-W7yDtCKgd";
+// Spotify API에 접근하기 위한 액세스 토큰 
 
+// 플레이리스트의 트랙 목록을 가져오는 함수
 export const fetchPlaylist = async (playlistId: string): Promise<Track[] | null> => {
   try {
+    // Spotify API에 요청을 보내 플레이리스트 데이터를 가져옴
     const response = await axios.get(`${SPOTIFY_BASE_URL}/playlists/${playlistId}`, {
       headers: {
-        Authorization: `Bearer ${ACCESS_TOKEN}`
+        Authorization: `Bearer ${ACCESS_TOKEN}` // 인증 헤더에 액세스 토큰 추가
       }
     });
     // API 응답의 구조를 확인한 후, 데이터를 Track 타입으로 변환
     const tracks: Track[] = response.data.tracks.items
-      .map((item: any) => ({
+      .map((item: SpotifyPlaylistTrack) => ({
         id: item.track.id,
         name: item.track.name,
         album: {
-          images: item.track.album.images.map((image: any) => ({ url: image.url })),
+          images: item.track.album.images.map((image: SpotifyImage) => ({ url: image.url })),
           name: item.track.album.name
         },
-        artists: item.track.artists.map((artist: any) => ({
+        artists: item.track.artists.map((artist: SpotifyArtist) => ({
           name: artist.name
         })),
         preview_url: item.track.preview_url
       }))
       .filter(track => track.preview_url !== null); // 미리듣기 URL이 있는 것만 필터링
 
-    return tracks;
+    return tracks; // 트랙목록 반환
   } catch (error) {
-    console.error('Error fetching playlist:', error);
     return null;
   }
 };
@@ -39,8 +40,8 @@ export const searchTracksByArtist = async (artistName: string): Promise<SearchTr
     try {
       const response = await axios.get(`${SPOTIFY_BASE_URL}/search`, {
         params: {
-          q: `artist:${artistName}`,
-          type: 'track',
+          q: `artist:${artistName}`, // 아티스트 이름으로 검색쿼리 설정
+          type: 'track', // 검색 타입을 트랙으로 설정함
           limit: 21
         },
         headers: {
@@ -48,7 +49,7 @@ export const searchTracksByArtist = async (artistName: string): Promise<SearchTr
         }
       });
   
-      return response.data.tracks.items.map((track: any) => ({
+      return response.data.tracks.items.map((track: SpotifyTrack) => ({
         id: track.id,
         name: track.name,
         preview_url: track.preview_url,
@@ -70,13 +71,13 @@ export const searchTracksByArtist = async (artistName: string): Promise<SearchTr
             },
             params: {
                 q: artistName,
-                type: 'artist',
+                type: 'artist', // 검색 타입을 아티스트로 설정
                 limit: 1,
             },
         });
 
         const artist = response.data.artists.items[0];
-        return artist?.images[0]?.url || null;  // 아티스트 이미지 URL 반환
+        return artist?.images[0]?.url || null; // 아티스트의 첫 번째 이미지 URL 반환, 없으면 null 반환
     } catch (error) {
         return null;
     }

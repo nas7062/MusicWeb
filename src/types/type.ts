@@ -21,3 +21,27 @@ export interface SearchTrack {
         name: string;
     }[];
 }
+export interface SpotifyTrack {
+  id: string;
+  name: string;
+  album: SpotifyAlbum;
+  artists: SpotifyArtist[];
+  preview_url: string | null;
+}
+
+export interface SpotifyPlaylistTrack {
+  track: SpotifyTrack;
+}
+export interface SpotifyImage {
+  url: string;
+}
+
+export interface SpotifyArtist {
+  id: string;
+  name: string;
+}
+export interface SpotifyAlbum {
+  id: string;
+  name: string;
+  images: SpotifyImage[];
+}
