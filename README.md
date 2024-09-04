@@ -1,27 +1,39 @@
-# React + TypeScript + Vite
+### 메인 페이지
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- ****Spotify API를 사용하여 특정 플레이리스트의 트랙 데이터를 수집하였습니다.
+- Spotify API에 요청을 보내기 위해 OAuth를 통해 액세스 토큰을 받아오고, 이를 인증 헤더에 추가하여 API 호출을 성공적으로 수행하였습니다.
+- API 응답으로 받은 플레이리스트 데이터를 파싱하여 Track 타입으로 변환하고, 미리 듣기가    가능한 곡들만 filter함수를 사용하여 플레이리스트로 구성하였습니다.
 
-Currently, two official plugins are available:
+### 검색 기능
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Spotify API를 활용하여 특정 아티스트의 트랙을 검색하고, 검색 결과를 사용자에게 제공하는 기능을 구현했습니다.
+- `artistName`을 입력받아 해당 아티스트의 트랙을 검색하고, 트랙 ID, 이름, 미리듣기 URL, 앨범 이미지 및 아티스트 정보를 포함한 결과를 반환하도록 구성했습니다.
+- 검색 쿼리에서 아티스트 이름으로 필터링하고, 트랙 데이터를 구조화하여 필요한 정보만 추출하였습니다.
+- 검색된 트랙의 첫 번째 아티스트의 이미지를 동적으로 로딩하는 기능을 추가하였습니다.
+- 아티스트 이름을 기준으로 Spotify API를 호출해 해당 아티스트의 이미지를 가져오고, 이를 상태 관리와 연동하여 즉시 반영되도록 구현했습니다.
 
-## Expanding the ESLint configuration
+### 최근 재생목록
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- `React Context`를 활용하여 최근 재생된 트랙 목록을 관리하는 전역 상태를 구현했습니다. 이를 통해  여러 컴포넌트에서 일관된 방식으로 최근 재생 기록에 접근하고 관리할 수 있도록 하였습니다.
+- 새로운 트랙이 재생될 때 해당 트랙을 최근 재생 목록에 추가하는 기능을 구현하였습니다. 이미 목록에 존재하는 트랙은 중복을 방지하기 위해 `filter`를 사용해 제거 후 최신 트랙으로 목록의 맨 앞에 추가하는 로직을 작성했습니다.
+- `localStorage`를 이용해 사용자가 앱을 종료한 후에도 최근 재생 목록이 유지되도록 하였습니다. `UseEffect`를 사용해 컴포넌트가 마운트될 때 `localStorage`에서 저장된 트랙 목록을 불러오며, 목록이 변경될 때마다 자동으로 `localStorage`에 저장되도록 구현했습니다.
+- `useRecentlyPlayed`라는 커스텀 훅을 만들어, 최근 재생된 트랙 목록과 트랙 추가 함수를 쉽게 사용할 수 있도록 하였습니다. 이 훅을 통해 재사용성과 코드의 가독성을 높였습니다.
 
-- Configure the top-level `parserOptions` property like this:
+### 세부 페이지
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
-```
+- `axios`, `Spotify API`를 사용하여 특정 트랙의 세부 정보를 조회하는 기능을 구현하였습니다. `useParams`를 통해 URL에서 트랙 ID를 추출하고, 이를 기반으로 Spotify API를 호출하여 트랙의 이름, 앨범 이미지, 아티스트 정보, 미리듣기 링크 등을 가져와 화면에 표시했습니다.
+- `useRecentlyPlayed` 커스텀 훅을 통해 최근 재생된 트랙 목록을 전역 상태로 관리하고, 이를 트랙 상세 페이지에 연동하여 사용자가 이전에 재생한 트랙들을 쉽게 접근할 수 있도록 하였습니다.
+- 최근 재생 목록에 있는 트랙을 클릭하면 해당 트랙의 상세 페이지로 이동할 수 있도록 `useNavigate`를 활용한 페이지 네비게이션 기능을 추가했습니다
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### 주요 구현
+
+- `axios`와 `React`를 사용하여 Spotify API로부터 특정 트랙의 상세 정보를 가져오는 기능을 구현.
+- 트랙의 이름, 앨범 이미지, 아티스트 정보, 미리듣기 URL 등을 API 응답에서 추출.
+- `React Context`를 활용하여 최근 재생된 트랙 목록을 전역 상태로 관리.
+- 사용자가 트랙을 재생할 때마다 해당 트랙을 최근 재생 목록에 추가하고, `localStorage`에 자동으로 저장되도록 구현.
+- 최근 재생 목록에 있는 트랙을 클릭하면 해당 트랙의 상세 페이지로 이동할 수 있도록 페이지 네비게이션 기능을 구현.
+
+
+### 페이지 주소
+
+[**https://10012-trd.vercel.app/**](https://music-web-10012.vercel.app/)
