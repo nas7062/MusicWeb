@@ -8,8 +8,6 @@ export interface Track {
     artists: { name: string }[]; // Ensure this matches with API response
     preview_url: string | null;
   }
- 
-
 export interface SearchTrack {
     id: string;
     name: string;

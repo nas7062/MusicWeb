@@ -3,7 +3,7 @@ import { SearchTrack, SpotifyPlaylistTrack, Track  ,SpotifyArtist,SpotifyImage,S
 
 
 const SPOTIFY_BASE_URL = "https://api.spotify.com/v1"; // Spotify API의 기본 URL 설정
-export const ACCESS_TOKEN = "BQBBqEHWsZ_3TQjiRDNK0f1TDCwv9awrXVoLrMBcOycoIaznFBT8sepYjiXqpB18oYRGUCp9AS7gTU0wk6UPJmeXnYL1wdQS5YUe-Y2fTkw3w8SASrwkksdYy7UD9Jo7btz1wbJf4ZVn_zcaD4ABXP5h0WShAKrkNEN9ZVIEJlzT9JbIImBItXpMVJ1151TKjVnPVTkewHRM-n80x9wf6WHshn-W7yDtCKgd";
+export const ACCESS_TOKEN = "BQBUYEm7hjdUyB116kkorwBwME8E609B3dNpcp-jpy0MiYB1J8hgmZlCdwqZmpHFYU46invsFf0tpCoVuHJg7B11FsvIerIHP48XEBDEJWCuTaUH_6x6e6wJ167U_o_EahKAYrK-tOasYqi6QpJO7F1AowUvllKazMPLQhwn_ceDJorE7zP8fQhBZD_Pg8Z2fZx1oKiwhh6HSIELzec31WC2C0ST1MP6G9HT";
 // Spotify API에 접근하기 위한 액세스 토큰 
 
 // 플레이리스트의 트랙 목록을 가져오는 함수
@@ -29,7 +29,7 @@ export const fetchPlaylist = async (playlistId: string): Promise<Track[] | null>
         })),
         preview_url: item.track.preview_url
       }))
-      .filter(track => track.preview_url !== null); // 미리듣기 URL이 있는 것만 필터링
+      .filter((track:Track) => track.preview_url !== null); // 미리듣기 URL이 있는 것만 필터링
 
     return tracks; // 트랙목록 반환
   } catch (error) {
